@@ -20,6 +20,7 @@ RUN apk --no-cache add python3 gettext postgresql-dev libxslt-dev libxml2-dev li
 	&& mkdir logs \
 	&& git clone --depth=1 -b stable https://github.com/taigaio/taiga-back.git back && cd back \
 	&& sed -e 's/cryptography==.*/cryptography==2.3.1/' -i requirements.txt \
+	&& pip3 install --upgrade pip \
 	&& pip3 install -r requirements.txt \
 	&& rm -rf /root/.cache \
 	&& apk del .build-dependencies \
