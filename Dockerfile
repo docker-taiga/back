@@ -7,6 +7,7 @@ ENV TAIGA_HOST=taiga.lan \
 	DB_USER=postgres \
 	DB_PASSWORD=password \
 	RABBIT_HOST=rabbit \
+	RABBIT_PORT=5672 \
 	RABBIT_USER=taiga \
 	RABBIT_PASSWORD=password \
 	RABBIT_VHOST=taiga \

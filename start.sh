@@ -13,6 +13,7 @@ if [ ! -f $INITIAL_SETUP_LOCK ]; then
         -e 's/$DB_USER/'$DB_USER'/' \
         -e 's/$DB_PASSWORD/'$DB_PASSWORD'/' \
         -e 's/$RABBIT_HOST/'$RABBIT_HOST'/' \
+        -e 's/$RABBIT_PORT/'$RABBIT_PORT'/' \
         -e 's/$RABBIT_USER/'$RABBIT_USER'/' \
         -e 's/$RABBIT_PASSWORD/'$RABBIT_PASSWORD'/' \
         -e 's/$RABBIT_VHOST/'$RABBIT_VHOST'/' \
