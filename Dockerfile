@@ -2,6 +2,7 @@ FROM alpine:latest
 
 ENV TAIGA_HOST=taiga.lan \
 	TAIGA_SECRET=secret \
+	TAIGA_SCHEME=http \
 	DB_HOST=db \
 	DB_NAME=taiga \
 	DB_USER=postgres \

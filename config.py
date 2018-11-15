@@ -9,9 +9,9 @@ SECRET_KEY = '$TAIGA_SECRET'
 MEDIA_URL = "https://$TAIGA_HOST/media/"
 STATIC_URL = "https://$TAIGA_HOST/static/"
 ADMIN_MEDIA_PREFIX = "https://$TAIGA_HOST/static/admin/"
-SITES["api"]["scheme"] = "https"
+SITES["api"]["scheme"] = "$TAIGA_SCHEME"
 SITES["api"]["domain"] = "$TAIGA_HOST"
-SITES["front"]["scheme"] = "https"
+SITES["front"]["scheme"] = "$TAIGA_SCHEME"
 SITES["front"]["domain"] = "$TAIGA_HOST"
 
 DATABASES = {

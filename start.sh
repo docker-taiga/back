@@ -8,6 +8,7 @@ if [ ! -f $INITIAL_SETUP_LOCK ]; then
 
     sed -e 's/$TAIGA_HOST/'$TAIGA_HOST'/' \
         -e 's/$TAIGA_SECRET/'$TAIGA_SECRET'/' \
+        -e 's/$TAIGA_SCHEME/'$TAIGA_SCHEME'/' \
         -e 's/$DB_HOST/'$DB_HOST'/' \
         -e 's/$DB_NAME/'$DB_NAME'/' \
         -e 's/$DB_USER/'$DB_USER'/' \
