@@ -9,10 +9,10 @@ if [ ! -f $INITIAL_SETUP_LOCK ]; then
     sed -e 's/$TAIGA_HOST/'$TAIGA_HOST'/' \
         -e 's/$TAIGA_SECRET/'$TAIGA_SECRET'/' \
         -e 's/$TAIGA_SCHEME/'$TAIGA_SCHEME'/' \
-        -e 's/$DB_HOST/'$DB_HOST'/' \
-        -e 's/$DB_NAME/'$DB_NAME'/' \
-        -e 's/$DB_USER/'$DB_USER'/' \
-        -e 's/$DB_PASSWORD/'$DB_PASSWORD'/' \
+        -e 's/$POSTGRES_HOST/'$POSTGRES_HOST'/' \
+        -e 's/$POSTGRES_DB/'$POSTGRES_DB'/' \
+        -e 's/$POSTGRES_USER/'$POSTGRES_USER'/' \
+        -e 's/$POSTGRES_PASSWORD/'$POSTGRES_PASSWORD'/' \
         -e 's/$RABBIT_HOST/'$RABBIT_HOST'/' \
         -e 's/$RABBIT_PORT/'$RABBIT_PORT'/' \
         -e 's/$RABBIT_USER/'$RABBIT_USER'/' \

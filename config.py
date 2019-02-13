@@ -17,10 +17,10 @@ SITES["front"]["domain"] = "$TAIGA_HOST"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "$DB_NAME",
-        "HOST": "$DB_HOST",
-        "USER": "$DB_USER",
-        "PASSWORD": "$DB_PASSWORD"
+        "NAME": "$POSTGRES_DB",
+        "HOST": "$POSTGRES_HOST",
+        "USER": "$POSTGRES_USER",
+        "PASSWORD": "$POSTGRES_PASSWORD"
     }
 }
 

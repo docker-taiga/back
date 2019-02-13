@@ -3,10 +3,10 @@ FROM alpine:latest
 ENV TAIGA_HOST=taiga.lan \
 	TAIGA_SECRET=secret \
 	TAIGA_SCHEME=http \
-	DB_HOST=db \
-	DB_NAME=taiga \
-	DB_USER=postgres \
-	DB_PASSWORD=password \
+	POSTGRES_HOST=db \
+	POSTGRES_DB=taiga \
+	POSTGRES_USER=postgres \
+	POSTGRES_PASSWORD=password \
 	RABBIT_HOST=rabbit \
 	RABBIT_PORT=5672 \
 	RABBIT_USER=taiga \
