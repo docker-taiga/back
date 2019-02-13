@@ -2,7 +2,7 @@
 
 cd /srv/taiga/back
 
-INITIAL_SETUP_LOCK=/run/initial_setup.lock
+INITIAL_SETUP_LOCK=/taiga-conf/.initial_setup.lock
 if [ ! -f $INITIAL_SETUP_LOCK ]; then
     touch $INITIAL_SETUP_LOCK
 
@@ -31,13 +31,22 @@ if [ ! -f $INITIAL_SETUP_LOCK ]; then
     python3 manage.py loaddata initial_project_templates
     python3 manage.py compilemessages
     python3 manage.py collectstatic --noinput
+else
+    ln -sf /taiga-conf/config.py /srv/taiga/back/settings/local.py
+    ln -sf /taiga-media /srv/taiga/back/media
 
-    mkdir /run/nginx
+    echo 'Waiting for database to become ready...'
+    sleep $STARTUP_TIMEOUT
+    echo 'Running database update...'
+    python3 manage.py migrate --noinput
+    python3 manage.py compilemessages
+    python3 manage.py collectstatic --noinput
 fi
 
 python3 manage.py runserver 127.0.0.1:8000 > /dev/stdout 2> /dev/stderr &
 TAIGA_PID=$!
 
+mkdir /run/nginx
 nginx -g 'daemon off;' &
 NGINX_PID=$!
 
