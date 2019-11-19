@@ -17,10 +17,9 @@ ENV TAIGA_HOST=taiga.lan \
 WORKDIR /srv/taiga
 
 RUN apk --no-cache add python3 gettext postgresql-dev libxslt-dev libxml2-dev libjpeg-turbo-dev zeromq-dev libffi-dev nginx \
-	&& apk add --no-cache --virtual .build-dependencies musl-dev python3-dev linux-headers git zlib-dev libjpeg-turbo-dev gcc g++ freetype-dev \
+	&& apk add --no-cache --virtual .build-dependencies git g++ musl-dev linux-headers python3-dev zlib-dev libjpeg-turbo-dev freetype-dev \
 	&& mkdir logs \
 	&& git clone --depth=1 -b stable https://github.com/taigaio/taiga-back.git back && cd back \
-	&& sed -e 's/cryptography==.*/cryptography==2.3.1/' -i requirements.txt \
 	&& pip3 install --upgrade pip \
 	&& pip3 install -r requirements.txt \
 	&& rm -rf /root/.cache \
