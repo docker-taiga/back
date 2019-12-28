@@ -2,10 +2,7 @@
 
 cd /srv/taiga/back
 
-INITIAL_SETUP_LOCK=/taiga-conf/.initial_setup.lock
-if [ ! -f $INITIAL_SETUP_LOCK ]; then
-    touch $INITIAL_SETUP_LOCK
-
+update_configs() {
     sed -e 's/$TAIGA_HOST/'$TAIGA_HOST'/' \
         -e 's/$TAIGA_SECRET/'$TAIGA_SECRET'/' \
         -e 's/$TAIGA_SCHEME/'$TAIGA_SCHEME'/' \
@@ -25,23 +22,30 @@ if [ ! -f $INITIAL_SETUP_LOCK ]; then
 
     echo 'Waiting for database to become ready...'
     sleep $STARTUP_TIMEOUT
-    echo 'Running initial setup...'
+}
+
+# Lock used to to load data on first run
+INITIAL_SETUP_LOCK=/taiga-conf/.initial_setup.lock
+if [ ! -f $INITIAL_SETUP_LOCK ]; then
+    touch $INITIAL_SETUP_LOCK
+
+    update_configs
+
+    echo 'Running migrations...'
     python3 manage.py migrate --noinput
+
+    echo 'Running initial setup...'
     python3 manage.py loaddata initial_user
     python3 manage.py loaddata initial_project_templates
-    python3 manage.py compilemessages
-    python3 manage.py collectstatic --noinput
 else
-    ln -sf /taiga-conf/config.py /srv/taiga/back/settings/local.py
-    ln -sf /taiga-media /srv/taiga/back/media
-
-    echo 'Waiting for database to become ready...'
-    sleep $STARTUP_TIMEOUT
-    echo 'Running database update...'
+    echo 'Running migrations...'
     python3 manage.py migrate --noinput
-    python3 manage.py compilemessages
-    python3 manage.py collectstatic --noinput
+
+   update_configs
 fi
+
+python3 manage.py compilemessages
+python3 manage.py collectstatic --noinput
 
 gunicorn --workers 4 --timeout 60 -b 127.0.0.1:8000 taiga.wsgi > /dev/stdout 2> /dev/stderr &
 TAIGA_PID=$!
