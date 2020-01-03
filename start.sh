@@ -15,8 +15,8 @@ update_configs() {
         -e 's/$RABBIT_USER/'$RABBIT_USER'/' \
         -e 's/$RABBIT_PASSWORD/'$RABBIT_PASSWORD'/' \
         -e 's/$RABBIT_VHOST/'$RABBIT_VHOST'/' \
-        -i /tmp/taiga-conf/config.py
-    cp /tmp/taiga-conf/config.py /taiga-conf/
+        /tmp/taiga-conf/config.py > /taiga-conf/config.py
+
     ln -sf /taiga-conf/config.py /srv/taiga/back/settings/local.py
     ln -sf /taiga-media /srv/taiga/back/media
 
