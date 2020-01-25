@@ -13,8 +13,7 @@ ENV TAIGA_HOST=taiga.lan \
 	RABBIT_PORT=5672 \
 	RABBIT_USER=taiga \
 	RABBIT_PASSWORD=password \
-	RABBIT_VHOST=taiga \
-	STARTUP_TIMEOUT=15s
+	RABBIT_VHOST=taiga
 
 WORKDIR /srv/taiga
 
@@ -34,6 +33,7 @@ WORKDIR /srv/taiga/back
 
 COPY config.py /tmp/taiga-conf/
 COPY nginx.conf /etc/nginx/conf.d/
+COPY waitfordb.py /
 COPY start.sh /
 
 VOLUME ["/taiga-conf", "/taiga-media"]

@@ -21,7 +21,7 @@ update_configs() {
     ln -sf /taiga-media /srv/taiga/back/media
 
     echo 'Waiting for database to become ready...'
-    sleep $STARTUP_TIMEOUT
+    python /waitfordb.py
 }
 
 # Lock used to to load data on first run
@@ -41,7 +41,7 @@ else
     echo 'Running migrations...'
     python3 manage.py migrate --noinput
 
-   update_configs
+    update_configs
 fi
 
 python3 manage.py compilemessages
