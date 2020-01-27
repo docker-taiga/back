@@ -2,7 +2,10 @@
 
 cd /srv/taiga/back
 
-update_configs() {
+INITIAL_SETUP_LOCK=/taiga-conf/.initial_setup.lock
+if [ ! -f $INITIAL_SETUP_LOCK ]; then
+    touch $INITIAL_SETUP_LOCK
+
     sed -e 's/$TAIGA_HOST/'$TAIGA_HOST'/' \
         -e 's/$TAIGA_SECRET/'$TAIGA_SECRET'/' \
         -e 's/$TAIGA_SCHEME/'$TAIGA_SCHEME'/' \
@@ -15,37 +18,30 @@ update_configs() {
         -e 's/$RABBIT_USER/'$RABBIT_USER'/' \
         -e 's/$RABBIT_PASSWORD/'$RABBIT_PASSWORD'/' \
         -e 's/$RABBIT_VHOST/'$RABBIT_VHOST'/' \
-        /tmp/taiga-conf/config.py > /taiga-conf/config.py
-
+        -i /tmp/taiga-conf/config.py
+    cp /tmp/taiga-conf/config.py /taiga-conf/
     ln -sf /taiga-conf/config.py /srv/taiga/back/settings/local.py
     ln -sf /taiga-media /srv/taiga/back/media
 
     echo 'Waiting for database to become ready...'
     python /waitfordb.py
-}
-
-# Lock used to to load data on first run
-INITIAL_SETUP_LOCK=/taiga-conf/.initial_setup.lock
-if [ ! -f $INITIAL_SETUP_LOCK ]; then
-    touch $INITIAL_SETUP_LOCK
-
-    update_configs
-
-    echo 'Running migrations...'
-    python3 manage.py migrate --noinput
-
     echo 'Running initial setup...'
+    python3 manage.py migrate --noinput
     python3 manage.py loaddata initial_user
     python3 manage.py loaddata initial_project_templates
+    python3 manage.py compilemessages
+    python3 manage.py collectstatic --noinput
 else
-    echo 'Running migrations...'
+    ln -sf /taiga-conf/config.py /srv/taiga/back/settings/local.py
+    ln -sf /taiga-media /srv/taiga/back/media
+
+    echo 'Waiting for database to become ready...'
+    python /waitfordb.py
+    echo 'Running database update...'
     python3 manage.py migrate --noinput
-
-    update_configs
+    python3 manage.py compilemessages
+    python3 manage.py collectstatic --noinput
 fi
-
-python3 manage.py compilemessages
-python3 manage.py collectstatic --noinput
 
 gunicorn --workers 4 --timeout 60 -b 127.0.0.1:8000 taiga.wsgi > /dev/stdout 2> /dev/stderr &
 TAIGA_PID=$!
