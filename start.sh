@@ -38,7 +38,7 @@ if [ ! -f $INITIAL_SETUP_LOCK ]; then
     ln -sf /taiga-media /srv/taiga/back/media
 
     echo 'Waiting for database to become ready...'
-    python /waitfordb.py
+    python3 /waitfordb.py
     echo 'Running initial setup...'
     python3 manage.py migrate --noinput
     python3 manage.py loaddata initial_user
@@ -47,10 +47,11 @@ if [ ! -f $INITIAL_SETUP_LOCK ]; then
     python3 manage.py collectstatic --noinput
 else
     ln -sf /taiga-conf/config.py /srv/taiga/back/settings/local.py
+    ln -sf /taiga-conf/celery.py /srv/taiga/back/settings/celery.py
     ln -sf /taiga-media /srv/taiga/back/media
 
     echo 'Waiting for database to become ready...'
-    python /waitfordb.py
+    python3 /waitfordb.py
     echo 'Running database update...'
     python3 manage.py migrate --noinput
     python3 manage.py compilemessages
