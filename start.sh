@@ -21,6 +21,20 @@ if [ ! -f $INITIAL_SETUP_LOCK ]; then
         -i /tmp/taiga-conf/config.py
     cp /tmp/taiga-conf/config.py /taiga-conf/
     ln -sf /taiga-conf/config.py /srv/taiga/back/settings/local.py
+
+    sed -e 's/$RABBIT_HOST/'$RABBIT_HOST'/' \
+        -e 's/$RABBIT_PORT/'$RABBIT_PORT'/' \
+        -e 's/$RABBIT_USER/'$RABBIT_USER'/' \
+        -e 's/$RABBIT_PASSWORD/'$RABBIT_PASSWORD'/' \
+        -e 's/$RABBIT_VHOST/'$RABBIT_VHOST'/' \
+        -e 's/$REDIS_HOST/'$REDIS_HOST'/' \
+        -e 's/$REDIS_PORT/'$REDIS_PORT'/' \
+        -e 's/$REDIS_DB/'$REDIS_DB'/' \
+        -e 's/$REDIS_PASSWORD/'$REDIS_PASSWORD'/' \
+        -i /tmp/taiga-conf/celery.py
+    cp /tmp/taiga-conf/celery.py /taiga-conf/
+    ln -sf /taiga-conf/celery.py /srv/taiga/back/settings/celery.py
+
     ln -sf /taiga-media /srv/taiga/back/media
 
     echo 'Waiting for database to become ready...'
@@ -43,6 +57,9 @@ else
     python3 manage.py collectstatic --noinput
 fi
 
+C_FORCE_ROOT=1 celery -A taiga worker --concurrency 4 -l INFO &
+CELERY_PID=$!
+
 gunicorn --workers 4 --timeout 60 -b 127.0.0.1:8000 taiga.wsgi > /dev/stdout 2> /dev/stderr &
 TAIGA_PID=$!
 
@@ -50,6 +67,6 @@ mkdir /run/nginx
 nginx -g 'daemon off;' &
 NGINX_PID=$!
 
-trap 'kill -TERM $NGINX_PID; kill -TERM $TAIGA_PID' SIGTERM
+trap 'kill -TERM $NGINX_PID; kill -TERM $TAIGA_PID; kill -TERM $CELERY_PID' SIGTERM
 
-wait $NGINX_PID $TAIGA_PID
+wait $NGINX_PID $TAIGA_PID $CELERY_PID
