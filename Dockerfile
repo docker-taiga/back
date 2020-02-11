@@ -1,6 +1,6 @@
 FROM alpine:3.10
 
-ARG VERSION=5.0.6
+ARG VERSION=5.0.7
 
 ENV TAIGA_HOST=taiga.lan \
     TAIGA_SECRET=secret \
