@@ -1,6 +1,6 @@
 FROM alpine:3.10
 
-ARG VERSION=5.0.7
+ARG VERSION=5.0.12
 
 ENV TAIGA_HOST=taiga.lan \
     TAIGA_PORT=80 \
