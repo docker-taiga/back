@@ -3,6 +3,7 @@ FROM alpine:3.10
 ARG VERSION=5.0.7
 
 ENV TAIGA_HOST=taiga.lan \
+    TAIGA_PORT=80 \
     TAIGA_SECRET=secret \
     TAIGA_SCHEME=http \
     POSTGRES_HOST=db \
