@@ -11,19 +11,24 @@ if [ ! -f $INITIAL_SETUP_LOCK ]; then
 	else
 		TAIGA_PORT=''
 	fi
+	
+	TAIGA_SECRET_ESCAPED=$(echo "$TAIGA_SECRET" | sed 's/[&/\]/\\&/g')
+	POSTGRES_PASSWORD_ESCAPED=$(echo "$POSTGRES_PASSWORD" | sed 's/[&/\]/\\&/g')
+	RABBIT_PASSWORD_ESCAPED=$(echo "$RABBIT_PASSWORD" | sed 's/[&/\]/\\&/g')
+	REDIS_PASSWORD_ESCAPED=$(echo "$REDIS_PASSWORD" | sed 's/[&/\]/\\&/g')
 
     sed -e 's/$TAIGA_HOST/'$TAIGA_HOST'/' \
         -e 's/$TAIGA_PORT/'$TAIGA_PORT'/' \
-        -e 's/$TAIGA_SECRET/'$TAIGA_SECRET'/' \
+        -e 's/$TAIGA_SECRET/'$TAIGA_SECRET_ESCAPED'/' \
         -e 's/$TAIGA_SCHEME/'$TAIGA_SCHEME'/' \
         -e 's/$POSTGRES_HOST/'$POSTGRES_HOST'/' \
         -e 's/$POSTGRES_DB/'$POSTGRES_DB'/' \
         -e 's/$POSTGRES_USER/'$POSTGRES_USER'/' \
-        -e 's/$POSTGRES_PASSWORD/'$POSTGRES_PASSWORD'/' \
+        -e 's/$POSTGRES_PASSWORD/'$POSTGRES_PASSWORD_ESCAPED'/' \
         -e 's/$RABBIT_HOST/'$RABBIT_HOST'/' \
         -e 's/$RABBIT_PORT/'$RABBIT_PORT'/' \
         -e 's/$RABBIT_USER/'$RABBIT_USER'/' \
-        -e 's/$RABBIT_PASSWORD/'$RABBIT_PASSWORD'/' \
+        -e 's/$RABBIT_PASSWORD/'$RABBIT_PASSWORD_ESCAPED'/' \
         -e 's/$RABBIT_VHOST/'$RABBIT_VHOST'/' \
         -i /tmp/taiga-conf/config.py
     cp /tmp/taiga-conf/config.py /taiga-conf/
@@ -32,12 +37,12 @@ if [ ! -f $INITIAL_SETUP_LOCK ]; then
     sed -e 's/$RABBIT_HOST/'$RABBIT_HOST'/' \
         -e 's/$RABBIT_PORT/'$RABBIT_PORT'/' \
         -e 's/$RABBIT_USER/'$RABBIT_USER'/' \
-        -e 's/$RABBIT_PASSWORD/'$RABBIT_PASSWORD'/' \
+        -e 's/$RABBIT_PASSWORD/'$RABBIT_PASSWORD_ESCAPED'/' \
         -e 's/$RABBIT_VHOST/'$RABBIT_VHOST'/' \
         -e 's/$REDIS_HOST/'$REDIS_HOST'/' \
         -e 's/$REDIS_PORT/'$REDIS_PORT'/' \
         -e 's/$REDIS_DB/'$REDIS_DB'/' \
-        -e 's/$REDIS_PASSWORD/'$REDIS_PASSWORD'/' \
+        -e 's/$REDIS_PASSWORD/'$REDIS_PASSWORD_ESCAPED'/' \
         -i /tmp/taiga-conf/celery.py
     cp /tmp/taiga-conf/celery.py /taiga-conf/
     ln -sf /taiga-conf/celery.py /srv/taiga/back/settings/celery.py
