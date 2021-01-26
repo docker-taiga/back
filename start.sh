@@ -38,42 +38,42 @@ if [ ! -f $INITIAL_SETUP_LOCK ]; then
     fi
 
     if [ "$CHANGE_NOTIFICATIONS_MIN_INTERVAL" ];then 
-        sed -e 's/$CHANGE_NOTIFICATIONS_MIN_INTERVAL/'$CHANGE_NOTIFICATIONS_MIN_INTERVAL'/
+        sed -e 's/$CHANGE_NOTIFICATIONS_MIN_INTERVAL/'$CHANGE_NOTIFICATIONS_MIN_INTERVAL'/' \
         -i /tmp/taiga-conf/config.py
     fi
 
     if [ "$EMAIL_BACKEND" ];then 
-        sed -e 's/$EMAIL_BACKEND/'$EMAIL_BACKEND'/
+        sed -e 's/$EMAIL_BACKEND/'$EMAIL_BACKEND'/' \
         -i /tmp/taiga-conf/config.py
     fi
 
     if [ "$EMAIL_USE_TLS" ];then 
-        sed -e 's/$EMAIL_USE_TLS/'$EMAIL_USE_TLS'/
+        sed -e 's/$EMAIL_USE_TLS/'$EMAIL_USE_TLS'/' \
         -i /tmp/taiga-conf/config.py
     fi
 
     if [ "$EMAIL_USE_SSL" ];then 
-        sed -e 's/$EMAIL_USE_SSL/'$EMAIL_USE_SSL'/
+        sed -e 's/$EMAIL_USE_SSL/'$EMAIL_USE_SSL'/' \
         -i /tmp/taiga-conf/config.py
     fi
 
     if [ "$EMAIL_HOST" ];then 
-        sed -e 's/$EMAIL_HOST/'$EMAIL_HOST'/
+        sed -e 's/$EMAIL_HOST/'$EMAIL_HOST'/' \
         -i /tmp/taiga-conf/config.py
     fi
 
     if [ "$EMAIL_PORT" ];then 
-        sed -e 's/$EMAIL_PORT/'$EMAIL_PORT'/
+        sed -e 's/$EMAIL_PORT/'$EMAIL_PORT'/' \
         -i /tmp/taiga-conf/config.py
     fi
 
     if [ "$EMAIL_HOST_USER" ];then 
-        sed -e 's/$EMAIL_HOST_USER/'$EMAIL_HOST_USER'/
+        sed -e 's/$EMAIL_HOST_USER/'$EMAIL_HOST_USER'/' \
         -i /tmp/taiga-conf/config.py
     fi
 
     if [ "$EMAIL_HOST_PASSWORD" ];then 
-        sed -e 's/$EMAIL_HOST_PASSWORD/'$EMAIL_HOST_PASSWORD'/
+        sed -e 's/$EMAIL_HOST_PASSWORD/'$EMAIL_HOST_PASSWORD'/' \
         -i /tmp/taiga-conf/config.py
     fi
 
