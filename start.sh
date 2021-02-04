@@ -1,6 +1,7 @@
 #!/bin/sh
 
 cd /srv/taiga/back
+source .venv/bin/activate
 
 INITIAL_SETUP_LOCK=/taiga-conf/.initial_setup.lock
 if [ ! -f $INITIAL_SETUP_LOCK ]; then
@@ -15,7 +16,6 @@ if [ ! -f $INITIAL_SETUP_LOCK ]; then
 	TAIGA_SECRET_ESCAPED=$(echo "$TAIGA_SECRET" | sed 's/[&/\]/\\&/g')
 	POSTGRES_PASSWORD_ESCAPED=$(echo "$POSTGRES_PASSWORD" | sed 's/[&/\]/\\&/g')
 	RABBIT_PASSWORD_ESCAPED=$(echo "$RABBIT_PASSWORD" | sed 's/[&/\]/\\&/g')
-	REDIS_PASSWORD_ESCAPED=$(echo "$REDIS_PASSWORD" | sed 's/[&/\]/\\&/g')
 
     sed -e 's/$TAIGA_HOST/'$TAIGA_HOST'/' \
         -e 's/$TAIGA_PORT/'$TAIGA_PORT'/' \
@@ -32,20 +32,7 @@ if [ ! -f $INITIAL_SETUP_LOCK ]; then
         -e 's/$RABBIT_VHOST/'$RABBIT_VHOST'/' \
         -i /tmp/taiga-conf/config.py
     cp /tmp/taiga-conf/config.py /taiga-conf/
-    ln -sf /taiga-conf/config.py /srv/taiga/back/settings/local.py
-
-    sed -e 's/$RABBIT_HOST/'$RABBIT_HOST'/' \
-        -e 's/$RABBIT_PORT/'$RABBIT_PORT'/' \
-        -e 's/$RABBIT_USER/'$RABBIT_USER'/' \
-        -e 's/$RABBIT_PASSWORD/'$RABBIT_PASSWORD_ESCAPED'/' \
-        -e 's/$RABBIT_VHOST/'$RABBIT_VHOST'/' \
-        -e 's/$REDIS_HOST/'$REDIS_HOST'/' \
-        -e 's/$REDIS_PORT/'$REDIS_PORT'/' \
-        -e 's/$REDIS_DB/'$REDIS_DB'/' \
-        -e 's/$REDIS_PASSWORD/'$REDIS_PASSWORD_ESCAPED'/' \
-        -i /tmp/taiga-conf/celery.py
-    cp /tmp/taiga-conf/celery.py /taiga-conf/
-    ln -sf /taiga-conf/celery.py /srv/taiga/back/settings/celery.py
+    ln -sf /taiga-conf/config.py /srv/taiga/back/settings/config.py
 
     ln -sf /taiga-media /srv/taiga/back/media
 
@@ -58,8 +45,7 @@ if [ ! -f $INITIAL_SETUP_LOCK ]; then
     python3 manage.py compilemessages
     python3 manage.py collectstatic --noinput
 else
-    ln -sf /taiga-conf/config.py /srv/taiga/back/settings/local.py
-    ln -sf /taiga-conf/celery.py /srv/taiga/back/settings/celery.py
+    ln -sf /taiga-conf/config.py /srv/taiga/back/settings/config.py
     ln -sf /taiga-media /srv/taiga/back/media
 
     echo 'Waiting for database to become ready...'
@@ -73,10 +59,10 @@ else
     echo '*/5 * * * * cd /srv/taiga/back && /usr/bin/python3 manage.py send_notifications >> /var/log/cron 2>&1' > /etc/crontabs/root
 fi
 
-C_FORCE_ROOT=1 celery -A taiga worker --concurrency 4 -l INFO &
+C_FORCE_ROOT=1 .venv/bin/celery -A taiga worker --concurrency 4 -l INFO &
 CELERY_PID=$!
 
-gunicorn --workers 4 --timeout 60 -b 127.0.0.1:8000 taiga.wsgi > /dev/stdout 2> /dev/stderr &
+.venv/bin/gunicorn --workers 4 --timeout 60 -b 127.0.0.1:8000 taiga.wsgi > /dev/stdout 2> /dev/stderr &
 TAIGA_PID=$!
 
 mkdir /run/nginx
